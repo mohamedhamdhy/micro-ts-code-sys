@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CODESYS_v1.0.0</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="scanlines"></div>
+    <div class="grid-bg"></div>
+
+    <div class="boot-screen" id="bootScreen">
+      <div class="boot-text" id="bootText"></div>
+    </div>
+
+    <div class="dashboard" id="dashboard" style="display: none">
+      <header class="topbar">
+        <div class="topbar-left">
+          <span class="sys-id">CODESYS_v1.0.0</span>
+          <span class="divider">|</span>
+          <span class="operator">OPERATOR: <strong>HAMDHY</strong></span>
+        </div>
+        <div class="topbar-center">
+          <div class="radar-dot"></div>
+          <span class="status-text" id="sysStatus">ALL SYSTEMS NOMINAL</span>
+        </div>
+        <div class="topbar-right">
+          <span class="clock" id="clock"></span>
+        </div>
+      </header>
+
+      <main class="main-grid">
+        <aside class="left-panel">
+          <div class="panel-block">
+            <div class="panel-label">// TARGET REPOSITORY</div>
+            <div class="input-row">
+              <label class="input-label">REPO URL</label>
+              <input
+                type="text"
+                id="repoUrl"
+                class="sys-input"
+                placeholder="https://github.com/user/repo"
+              />
+            </div>
+            <div class="input-hint">github · gitlab · bitbucket · https</div>
+          </div>
+
+          <div class="action-btns">
+            <button class="fire-btn" id="analyzeBtn">
+              <span class="fire-label">▶ RUN ANALYSIS</span>
+              <div class="fire-scan"></div>
+            </button>
+            <button class="stop-btn" id="abortBtn" disabled>
+              <span>■ ABORT</span>
+            </button>
+          </div>
+
+          <div class="panel-block">
+            <div class="panel-label">// QUALITY GRADE</div>
+            <div class="grade-display">
+              <div class="grade-letter" id="gradeLetter">—</div>
+              <div class="grade-score" id="gradeScore">—/100</div>
+              <div class="grade-label" id="gradeLabel">AWAITING SCAN</div>
+            </div>
+          </div>
+
+          <div class="panel-block">
+            <div class="panel-label">// SCORE BREAKDOWN</div>
+            <div class="score-rows" id="scoreRows">
+              <div class="score-row">
+                <span class="score-name">MAINTAINABILITY</span>
+                <div class="score-bar-wrap">
+                  <div class="score-bar" id="barMaint" style="width: 0%"></div>
+                </div>
+                <span class="score-val" id="valMaint">—</span>
+              </div>
+              <div class="score-row">
+                <span class="score-name">COMPLEXITY</span>
+                <div class="score-bar-wrap">
+                  <div
+                    class="score-bar cyan"
+                    id="barComp"
+                    style="width: 0%"
+                  ></div>
+                </div>
+                <span class="score-val" id="valComp">—</span>
+              </div>
+              <div class="score-row">
+                <span class="score-name">DUPLICATION</span>
+                <div class="score-bar-wrap">
+                  <div
+                    class="score-bar yellow"
+                    id="barDup"
+                    style="width: 0%"
+                  ></div>
+                </div>
+                <span class="score-val" id="valDup">—</span>
+              </div>
+              <div class="score-row">
+                <span class="score-name">STYLE</span>
+                <div class="score-bar-wrap">
+                  <div
+                    class="score-bar green"
+                    id="barStyle"
+                    style="width: 0%"
+                  ></div>
+                </div>
+                <span class="score-val" id="valStyle">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-block">
+            <div class="panel-label">// SCAN STATS</div>
+            <div class="stats-grid4">
+              <div class="stat4">
+                <div class="stat4-num" id="statFiles">0</div>
+                <div class="stat4-lbl">FILES</div>
+              </div>
+              <div class="stat4">
+                <div class="stat4-num" id="statLines">0</div>
+                <div class="stat4-lbl">LINES</div>
+              </div>
+              <div class="stat4">
+                <div class="stat4-num red" id="statCritical">0</div>
+                <div class="stat4-lbl">CRITICAL</div>
+              </div>
+              <div class="stat4">
+                <div class="stat4-num yellow" id="statWarnings">0</div>
+                <div class="stat4-lbl">WARNINGS</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-block">
+            <div class="panel-label">// ARCHITECTURE</div>
+            <div class="arch-grid" id="archGrid">
+              <div class="arch-item">
+                <span class="arch-key">TYPE</span
+                ><span class="arch-val" id="archType">—</span>
+              </div>
+              <div class="arch-item">
+                <span class="arch-key">TESTS</span
+                ><span class="arch-val" id="archTests">—</span>
+              </div>
+              <div class="arch-item">
+                <span class="arch-key">LINT</span
+                ><span class="arch-val" id="archLint">—</span>
+              </div>
+              <div class="arch-item">
+                <span class="arch-key">CI/CD</span
+                ><span class="arch-val" id="archCICD">—</span>
+              </div>
+              <div class="arch-item">
+                <span class="arch-key">DOCKER</span
+                ><span class="arch-val" id="archDocker">—</span>
+              </div>
+              <div class="arch-item">
+                <span class="arch-key">TYPES</span
+                ><span class="arch-val" id="archTypes">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-btns">
+            <button class="dl-btn" id="dlMarkdown" disabled>
+              ↓ DOWNLOAD REPORT.MD
+            </button>
+          </div>
+        </aside>
+
+        <section class="right-panel">
+          <div class="tab-bar">
+            <button class="tab active" data-tab="live">LIVE FEED</button>
+            <button class="tab" data-tab="issues">ISSUES</button>
+            <button class="tab" data-tab="files">FILE SCORES</button>
+            <button class="tab" data-tab="report">REPORT</button>
+            <button class="tab" data-tab="history">HISTORY</button>
+            <div class="tab-count" id="tabIssueCount">0</div>
+          </div>
+
+          <div class="tab-content active" id="tab-live">
+            <div class="feed-header">
+              <span>ANALYSIS FEED</span><span class="blink-dot"></span>
+            </div>
+            <div class="feed" id="liveFeed">
+              <div class="feed-idle">[ AWAITING REPOSITORY TARGET... ]</div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="tab-issues">
+            <div class="feed-header">
+              <span>DETECTED ISSUES</span>
+              <div class="filter-btns">
+                <button class="filter-btn active" data-sev="all">ALL</button>
+                <button class="filter-btn" data-sev="critical">CRITICAL</button>
+                <button class="filter-btn" data-sev="warning">WARNING</button>
+                <button class="filter-btn" data-sev="info">INFO</button>
+              </div>
+            </div>
+            <div class="feed" id="issuesFeed">
+              <div class="feed-idle">[ NO ISSUES SCANNED YET ]</div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="tab-files">
+            <div class="feed-header">
+              <span>FILE QUALITY SCORES (worst first)</span>
+            </div>
+            <div class="feed" id="filesFeed">
+              <div class="feed-idle">[ NO FILES ANALYZED YET ]</div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="tab-report">
+            <div class="feed-header">
+              <span>MARKDOWN REPORT</span>
+              <button class="wipe-btn" id="copyReport" disabled>⎘ COPY</button>
+            </div>
+            <div class="readme-preview" id="reportPreview">
+              <div class="feed-idle">[ NO REPORT GENERATED ]</div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="tab-history">
+            <div class="feed-header">
+              <span>SCAN HISTORY</span>
+              <button class="wipe-btn" onclick="wipeHistory()">WIPE</button>
+            </div>
+            <div class="feed" id="historyFeed"></div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <span>ENGINE: STATIC-ANALYSIS</span>
+        <span class="divider">|</span>
+        <span>PARSER: NODE.FS</span>
+        <span class="divider">|</span>
+        <span>AI: OPENAI_OPTIONAL</span>
+        <span class="divider">|</span>
+        <span id="footerLang">LANG: —</span>
+        <span class="divider">|</span>
+        <span id="footerDeps">DEPS: —</span>
+      </footer>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const bootLines = [
+        "CODESYS v1.0.0 INITIALIZING...",
+        "LOADING STATIC ANALYSIS ENGINE... OK",
+        "LOADING COMPLEXITY CALCULATOR... OK",
+        "LOADING CODE SMELL DETECTOR... OK",
+        "LOADING ANTI-PATTERN SCANNER... OK",
+        "CONNECTING REPORT GENERATOR... OK",
+        "ESTABLISHING SOCKET CONNECTION... OK",
+        "ALL SYSTEMS NOMINAL.",
+        "WELCOME, HAMDHY. READY TO ANALYZE.",
+      ];
+      let bi = 0;
+      const bootEl = document.getElementById("bootText");
+      function bootStep() {
+        if (bi < bootLines.length) {
+          bootEl.innerHTML += `<div class="boot-line">> ${bootLines[bi]}</div>`;
+          bi++;
+          setTimeout(bootStep, 200);
+        } else {
+          setTimeout(() => {
+            document.getElementById("bootScreen").style.opacity = "0";
+            setTimeout(() => {
+              document.getElementById("bootScreen").style.display = "none";
+              const d = document.getElementById("dashboard");
+              d.style.display = "flex";
+              d.style.animation = "fadeIn 0.4s ease";
+              loadHistory();
+            }, 400);
+          }, 500);
+        }
+      }
+      setTimeout(bootStep, 300);
+
+      function tick() {
+        document.getElementById("clock").textContent =
+          new Date().toLocaleTimeString("en-GB", { hour12: false }) + " UTC";
+      }
+      tick();
+      setInterval(tick, 1000);
+
+      document.querySelectorAll(".tab").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document
+            .querySelectorAll(".tab")
+            .forEach((t) => t.classList.remove("active"));
+          document
+            .querySelectorAll(".tab-content")
+            .forEach((t) => t.classList.remove("active"));
+          btn.classList.add("active");
+          document
+            .getElementById("tab-" + btn.dataset.tab)
+            .classList.add("active");
+        });
+      });
+
+      let currentReport = null;
+      let currentFilter = "all";
+
+      document.querySelectorAll(".filter-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document
+            .querySelectorAll(".filter-btn")
+            .forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          currentFilter = btn.dataset.sev;
+          if (currentReport) renderIssues(currentReport.topIssues);
+        });
+      });
+
+      let abortController = null;
+      let isRunning = false;
+
+      document
+        .getElementById("analyzeBtn")
+        .addEventListener("click", async () => {
+          if (isRunning) return;
+          const repoUrl = document.getElementById("repoUrl").value.trim();
+          if (!repoUrl) {
+            addLive("error", "NO TARGET — enter a GitHub repository URL");
+            return;
+          }
+
+          isRunning = true;
+          abortController = new AbortController();
+          const analyzeBtn = document.getElementById("analyzeBtn");
+          const abortBtn = document.getElementById("abortBtn");
+          analyzeBtn.disabled = true;
+          analyzeBtn.querySelector(".fire-label").textContent =
+            "⟳ ANALYZING...";
+          abortBtn.disabled = false;
+
+          document.getElementById("gradeLetter").textContent = "—";
+          document.getElementById("gradeScore").textContent = "—/100";
+          document.getElementById("gradeLabel").textContent = "SCANNING...";
+          document.getElementById("gradeLetter").className = "grade-letter";
+          document.getElementById("liveFeed").innerHTML = "";
+          setStatus("SCANNING REPOSITORY...");
+
+          addLive("info", `TARGET: ${repoUrl}`);
+
+          try {
+            const res = await fetch("/analyze", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ repoUrl }),
+              signal: abortController.signal,
+            });
+            if (!res.ok) throw new Error(await res.text());
+
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+
+            while (true) {
+              const { value, done } = await reader.read();
+              if (done) break;
+              if (!value) continue;
+              const lines = decoder
+                .decode(value)
+                .split("\n")
+                .filter((l) => l.trim());
+              for (const line of lines) {
+                if (line === "DONE" || line === "ERROR") continue;
+                const type = line.startsWith("❌")
+                  ? "error"
+                  : line.startsWith("✅")
+                    ? "success"
+                    : "info";
+                addLive(type, line);
+                setStatus(
+                  line
+                    .replace(/[✅❌]/g, "")
+                    .trim()
+                    .substring(0, 60),
+                );
+              }
+            }
+          } catch (err) {
+            if (err.name === "AbortError") {
+              addLive("error", "■ ABORTED BY OPERATOR");
+              setStatus("ABORTED");
+            } else {
+              addLive("error", `FATAL: ${err.message}`);
+              setStatus("ERROR");
+            }
+          } finally {
+            isRunning = false;
+            analyzeBtn.disabled = false;
+            analyzeBtn.querySelector(".fire-label").textContent =
+              "▶ RUN ANALYSIS";
+            abortBtn.disabled = true;
+          }
+        });
+
+      document.getElementById("abortBtn").addEventListener("click", () => {
+        if (abortController) abortController.abort();
+      });
+
+      const socket = io();
+      socket.on("report-ready", (report) => {
+        currentReport = report;
+        renderReport(report);
+      });
+
+      const devSocket = io("http://localhost:3001");
+      devSocket.on("reload", () => location.reload());
+
+      function renderReport(r) {
+        const gradeColors = {
+          A: "green",
+          B: "cyan",
+          C: "yellow",
+          D: "orange",
+          F: "red",
+        };
+        const gl = document.getElementById("gradeLetter");
+        gl.textContent = r.overallGrade;
+        gl.className =
+          "grade-letter grade-" + (gradeColors[r.overallGrade] || "cyan");
+        document.getElementById("gradeScore").textContent =
+          `${r.overallScore}/100`;
+        document.getElementById("gradeLabel").textContent = gradeLabel(
+          r.overallScore,
+        );
+
+        setBar("Maint", r.maintainabilityScore);
+        setBar("Comp", r.complexityScore);
+        setBar("Dup", r.duplicationScore);
+        setBar("Style", r.styleScore);
+
+        document.getElementById("statFiles").textContent = r.totalFiles;
+        document.getElementById("statLines").textContent =
+          r.totalLines.toLocaleString();
+        document.getElementById("statCritical").textContent = r.criticalIssues;
+        document.getElementById("statWarnings").textContent = r.warningIssues;
+        document.getElementById("archType").textContent = r.architecture.type;
+        document.getElementById("archTests").textContent = r.architecture
+          .hasTests
+          ? "✔ YES"
+          : "✘ NO";
+        document.getElementById("archLint").textContent = r.architecture
+          .hasLinting
+          ? "✔ YES"
+          : "✘ NO";
+        document.getElementById("archCICD").textContent = r.architecture.hasCICD
+          ? "✔ YES"
+          : "✘ NO";
+        document.getElementById("archDocker").textContent = r.architecture
+          .hasDocker
+          ? "✔ YES"
+          : "✘ NO";
+        document.getElementById("archTypes").textContent = r.architecture
+          .hasTypeChecking
+          ? "✔ YES"
+          : "✘ NO";
+
+        [
+          "archTests",
+          "archLint",
+          "archCICD",
+          "archDocker",
+          "archTypes",
+        ].forEach((id) => {
+          const el = document.getElementById(id);
+          el.style.color = el.textContent.includes("✔")
+            ? "var(--green)"
+            : "var(--red)";
+        });
+
+        document.getElementById("footerLang").textContent =
+          `LANG: ${r.language}`;
+        document.getElementById("footerDeps").textContent =
+          `DEPS: ${r.totalDeps} PROD / ${r.devDeps} DEV`;
+
+        renderIssues(r.topIssues);
+        document.getElementById("tabIssueCount").textContent = r.totalIssues;
+
+        renderFiles(r.files);
+
+        if (r.reportMarkdown) {
+          document.getElementById("reportPreview").innerHTML =
+            `<pre class="readme-raw">${escHtml(r.reportMarkdown)}</pre>`;
+          document.getElementById("copyReport").disabled = false;
+          document.getElementById("dlMarkdown").disabled = false;
+        }
+
+        saveHistory({
+          repo: r.repoName,
+          url: r.repoUrl,
+          grade: r.overallGrade,
+          score: r.overallScore,
+          issues: r.totalIssues,
+          time: nowStr(),
+        });
+        loadHistory();
+
+        activateTab("issues");
+        setStatus(
+          `ANALYSIS COMPLETE — GRADE: ${r.overallGrade} (${r.overallScore}/100)`,
+        );
+        addLive(
+          "success",
+          `✅ REPORT READY — ${r.totalIssues} issues found · Grade ${r.overallGrade}`,
+        );
+      }
+
+      function setBar(key, val) {
+        const bar = document.getElementById("bar" + key);
+        const lbl = document.getElementById("val" + key);
+        bar.style.width = val + "%";
+        lbl.textContent = val;
+        bar.style.background =
+          val >= 80
+            ? "var(--green)"
+            : val >= 60
+              ? "var(--cyan)"
+              : val >= 40
+                ? "var(--yellow)"
+                : "var(--red)";
+      }
+
+      function renderIssues(issues) {
+        const feed = document.getElementById("issuesFeed");
+        const filtered =
+          currentFilter === "all"
+            ? issues
+            : issues.filter((i) => i.severity === currentFilter);
+        if (filtered.length === 0) {
+          feed.innerHTML = `<div class="feed-idle">[ NO ${currentFilter.toUpperCase()} ISSUES ]</div>`;
+          return;
+        }
+        feed.innerHTML = filtered
+          .map((iss) => {
+            const sevClass =
+              {
+                critical: "feed-error",
+                warning: "feed-warn",
+                info: "feed-info",
+              }[iss.severity] || "feed-info";
+            const sevIcon =
+              { critical: "🔴", warning: "🟡", info: "🔵" }[iss.severity] ||
+              "⚪";
+            return `<div class="issue-card ${sevClass}">
+        <div class="issue-header">
+          <span class="issue-type">${sevIcon} ${iss.type}</span>
+          <span class="issue-sev sev-${iss.severity}">${iss.severity.toUpperCase()}</span>
+        </div>
+        <div class="issue-file">📁 ${iss.file}${iss.line ? ` : ${iss.line}` : ""}</div>
+        <div class="issue-desc">${iss.description}</div>
+        <div class="issue-fix">💡 ${iss.suggestion}</div>
+      </div>`;
+          })
+          .join("");
+      }
+
+      function renderFiles(files) {
+        const feed = document.getElementById("filesFeed");
+        if (!files || files.length === 0) {
+          feed.innerHTML = `<div class="feed-idle">[ NO FILES ]</div>`;
+          return;
+        }
+        feed.innerHTML = files
+          .slice(0, 50)
+          .map((f) => {
+            const gradeClass =
+              { A: "green", B: "cyan", C: "yellow", D: "orange", F: "red" }[
+                f.grade
+              ] || "cyan";
+            const bar = Math.round(f.score);
+            return `<div class="file-row">
+        <div class="file-grade grade-${gradeClass}">${f.grade}</div>
+        <div class="file-info">
+          <div class="file-path">${f.path}</div>
+          <div class="file-meta">${f.language} · ${f.codeLines} LOC · CC:${f.cyclomaticComplexity} · ${f.issues.length} issues</div>
+          <div class="file-bar-wrap"><div class="file-bar" style="width:${bar}%;background:${barColor(bar)}"></div></div>
+        </div>
+        <div class="file-score">${f.score}</div>
+      </div>`;
+          })
+          .join("");
+      }
+
+      function barColor(val) {
+        if (val >= 80) return "var(--green)";
+        if (val >= 60) return "var(--cyan)";
+        if (val >= 40) return "var(--yellow)";
+        return "var(--red)";
+      }
+
+      document.getElementById("copyReport").addEventListener("click", () => {
+        if (!currentReport?.reportMarkdown) return;
+        navigator.clipboard.writeText(currentReport.reportMarkdown).then(() => {
+          const btn = document.getElementById("copyReport");
+          btn.textContent = "✔ COPIED";
+          setTimeout(() => {
+            btn.textContent = "⎘ COPY";
+          }, 2000);
+        });
+      });
+
+      document
+        .getElementById("dlMarkdown")
+        .addEventListener("click", async () => {
+          if (!currentReport?.reportMarkdown) return;
+          const res = await fetch("/download", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              content: currentReport.reportMarkdown,
+              filename: `${currentReport.repoName}-quality-report.md`,
+            }),
+          });
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `${currentReport.repoName}-quality-report.md`;
+          a.click();
+          URL.revokeObjectURL(url);
+        });
+
+      function saveHistory(entry) {
+        let arr = JSON.parse(localStorage.getItem("codesys_history") || "[]");
+        arr.unshift(entry);
+        if (arr.length > 100) arr = arr.slice(0, 100);
+        localStorage.setItem("codesys_history", JSON.stringify(arr));
+      }
+
+      function loadHistory() {
+        const feed = document.getElementById("historyFeed");
+        const arr = JSON.parse(localStorage.getItem("codesys_history") || "[]");
+        if (arr.length === 0) {
+          feed.innerHTML = `<div class="feed-idle">[ NO SCAN HISTORY ]</div>`;
+          return;
+        }
+        const gradeColors = {
+          A: "green",
+          B: "cyan",
+          C: "yellow",
+          D: "orange",
+          F: "red",
+        };
+        feed.innerHTML = arr
+          .map(
+            (e) => `
+      <div class="file-row" style="cursor:pointer" onclick="document.getElementById('repoUrl').value='${e.url}'">
+        <div class="file-grade grade-${gradeColors[e.grade] || "cyan"}">${e.grade}</div>
+        <div class="file-info">
+          <div class="file-path">${e.repo}</div>
+          <div class="file-meta">${e.score}/100 · ${e.issues} issues · ${e.time}</div>
+        </div>
+        <div class="file-score" style="font-size:0.6rem;color:var(--muted)">${e.url.replace("https://github.com/", "")}</div>
+      </div>`,
+          )
+          .join("");
+      }
+
+      function wipeHistory() {
+        if (!confirm("WIPE SCAN HISTORY?")) return;
+        localStorage.removeItem("codesys_history");
+        loadHistory();
+      }
+
+      function addLive(type, msg) {
+        const feed = document.getElementById("liveFeed");
+        const idle = feed.querySelector(".feed-idle");
+        if (idle) idle.remove();
+        const line = document.createElement("div");
+        line.className = `feed-line feed-${type}`;
+        line.innerHTML = `<span class="feed-ts">${nowStr()}</span><span class="feed-msg">${escHtml(msg)}</span>`;
+        feed.appendChild(line);
+        feed.scrollTop = feed.scrollHeight;
+        while (feed.children.length > 200) feed.removeChild(feed.firstChild);
+      }
+
+      function activateTab(name) {
+        document
+          .querySelectorAll(".tab")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((t) => t.classList.remove("active"));
+        document.querySelector(`[data-tab="${name}"]`).classList.add("active");
+        document.getElementById(`tab-${name}`).classList.add("active");
+      }
+
+      function setStatus(msg) {
+        document.getElementById("sysStatus").textContent = msg.substring(0, 70);
+      }
+
+      function gradeLabel(score) {
+        if (score >= 90) return "EXCELLENT";
+        if (score >= 80) return "GOOD";
+        if (score >= 70) return "ACCEPTABLE";
+        if (score >= 55) return "NEEDS WORK";
+        return "CRITICAL";
+      }
+
+      function nowStr() {
+        return new Date().toLocaleTimeString("en-GB", { hour12: false });
+      }
+
+      function escHtml(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+    </script>
+  </body>
+</html>
